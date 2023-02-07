@@ -29,7 +29,7 @@ const mensagens = [
 
 // - [GET] /Mensagens - Retorna a lista de mensagens
 app.get('/mensagens', (req, res) => {
-    res.send(mensagens);
+    res.send(mensagens.filter(Boolean));
 });
     
 // - [GET] /Mensagens/{ID} - Retorna uma unica mensagem pelo ID
@@ -59,6 +59,15 @@ app.put('/mensagens/:id', (req, res) => {
     mensagens[id] = mensagem;
 
     res.send(`Mensagem atualizada com sucesso para ${mensagem}`);
+})
+
+// - [DELETE] /Mensagens/{id} - Remover uma mensagem pelo ID
+app.delete('/mensagens/:id', (req, res) => {
+    const id = req.params.id - 1;
+
+    delete mensagens[id];
+
+    res.send("Mensagem renovida com sucesso!")
 })
 
 app.listen(port, () => {
