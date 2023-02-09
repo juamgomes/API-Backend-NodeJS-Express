@@ -23,8 +23,14 @@ CRUD: Criar, Ler (Individual e Tudo), Atualizar e Removeer
 */
 
 const mensagens = [
-    "Primeira mensagem",
-    "Segunda mensagem"
+    {
+        "id": 1,
+        "texto": "Primeira mensagem",
+    },
+    {
+        "id": 2,
+        "texto": "Segunda mensagem",
+    }
 ]
 
 // - [GET] /Mensagens - Retorna a lista de mensagens
@@ -38,27 +44,47 @@ app.get('/mensagens/:id', (req, res) => {
 
     const mensagem = mensagens[id];
 
+    if(!mensagem){
+        res.send("Mensagem não encontrada!");
+
+        return;
+    }
+    
     res.send(mensagem);
 });
 
 // - [POST] /Mensagens - Cria novas mensagens 
 app.post('/mensagens', (req, res) => {
-    const mensagem = req.body.mensagem
+    const mensagem = req.body;
 
-    mensagens.push(mensagem)
+    if(!mensagem || !mensagem.texto) {
+        res.send('Mensagem invalida');
 
-    res.send(`Nova mensagem criada: ${mensagem}`);
+        return;
+    }
+
+    mensagem.id = mensagens.length + 1;
+    mensagens.push(mensagem);
+
+    res.send(mensagem);
 });
 
 // - [PUT] /Mensagens{id} - Atualiza uma mensagem pelo ID
 app.put('/mensagens/:id', (req, res) => {
     const id = req.params.id - 1;
 
-    const mensagem = req.body.mensagens;
+    const mensagem = mensagens[id];
 
-    mensagens[id] = mensagem;
+    const novoTexto = req.body.texto;
+    mensagem.texto = novoTexto;
 
-    res.send(`Mensagem atualizada com sucesso para ${mensagem}`);
+    if (!novoTexto) {
+        res.send("Mensagem inválida!")
+
+        return;
+    }
+
+    res.send(mensagem);
 })
 
 // - [DELETE] /Mensagens/{id} - Remover uma mensagem pelo ID
@@ -67,7 +93,7 @@ app.delete('/mensagens/:id', (req, res) => {
 
     delete mensagens[id];
 
-    res.send("Mensagem renovida com sucesso!")
+    res.send("Mensagem renovida com sucesso!");
 })
 
 app.listen(port, () => {
